@@ -1,7 +1,9 @@
 package counterstore
 
+import "github.com/AnatoliyBr/go-clean-project-example/internal/entity"
+
 type CounterStore struct {
-	counters map[string]int
+	counters entity.Counters
 }
 
 func NewCounterStore(initvals map[string]int) *CounterStore {

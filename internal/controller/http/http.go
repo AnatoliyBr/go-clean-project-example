@@ -6,9 +6,24 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/AnatoliyBr/go-clean-project-example/internal/entity"
 	"github.com/gorilla/mux"
 )
+
+type CommandType int
+
+const (
+	SetCommand = iota
+	GetCommand
+	IncCommand
+	DecCommand
+)
+
+type Command struct {
+	Ty        CommandType
+	Name      string
+	Val       int
+	ReplyChan chan int
+}
 
 type CounterUseCase interface {
 	Set(string, int) int
@@ -21,7 +36,7 @@ type HTTPServer struct {
 	config *Config
 	router *mux.Router
 	uc     CounterUseCase
-	cmds   chan entity.Command
+	cmds   chan Command
 }
 
 func NewHTTPServer(config *Config, uc CounterUseCase) *HTTPServer {
@@ -29,7 +44,7 @@ func NewHTTPServer(config *Config, uc CounterUseCase) *HTTPServer {
 		config: config,
 		router: mux.NewRouter(),
 		uc:     uc,
-		cmds:   make(chan entity.Command),
+		cmds:   make(chan Command),
 	}
 }
 
@@ -42,16 +57,16 @@ func (s *HTTPServer) StartHTTPServer() error {
 func (s *HTTPServer) StartCounterManager() {
 	for cmd := range s.cmds {
 		switch cmd.Ty {
-		case entity.SetCommand:
+		case SetCommand:
 			val := s.uc.Set(cmd.Name, cmd.Val)
 			cmd.ReplyChan <- val
-		case entity.GetCommand:
+		case GetCommand:
 			val := s.uc.Get(cmd.Name)
 			cmd.ReplyChan <- val
-		case entity.IncCommand:
+		case IncCommand:
 			val := s.uc.Inc(cmd.Name)
 			cmd.ReplyChan <- val
-		case entity.DecCommand:
+		case DecCommand:
 			val := s.uc.Dec(cmd.Name)
 			cmd.ReplyChan <- val
 		default:
@@ -76,8 +91,8 @@ func (s *HTTPServer) set(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s\n", err)
 	} else {
 		replyChan := make(chan int)
-		s.cmds <- entity.Command{
-			Ty:        entity.SetCommand,
+		s.cmds <- Command{
+			Ty:        SetCommand,
 			Name:      name,
 			Val:       intval,
 			ReplyChan: replyChan,
@@ -91,8 +106,8 @@ func (s *HTTPServer) get(w http.ResponseWriter, r *http.Request) {
 	log.Printf("get %v\n", r)
 	name := r.URL.Query().Get("name")
 	replyChan := make(chan int)
-	s.cmds <- entity.Command{
-		Ty:        entity.GetCommand,
+	s.cmds <- Command{
+		Ty:        GetCommand,
 		Name:      name,
 		ReplyChan: replyChan,
 	}
@@ -109,8 +124,8 @@ func (s *HTTPServer) inc(w http.ResponseWriter, r *http.Request) {
 	log.Printf("inc %v\n", r)
 	name := r.URL.Query().Get("name")
 	replyChan := make(chan int)
-	s.cmds <- entity.Command{
-		Ty:        entity.IncCommand,
+	s.cmds <- Command{
+		Ty:        IncCommand,
 		Name:      name,
 		ReplyChan: replyChan,
 	}
@@ -127,8 +142,8 @@ func (s *HTTPServer) dec(w http.ResponseWriter, r *http.Request) {
 	log.Printf("inc %v\n", r)
 	name := r.URL.Query().Get("name")
 	replyChan := make(chan int)
-	s.cmds <- entity.Command{
-		Ty:        entity.DecCommand,
+	s.cmds <- Command{
+		Ty:        DecCommand,
 		Name:      name,
 		ReplyChan: replyChan,
 	}
