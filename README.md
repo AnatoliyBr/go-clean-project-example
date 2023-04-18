@@ -36,7 +36,9 @@ HTTP < usecase
 ```
 
 ### Архитектура
-![architecture diagram](/assets/architecture.png "architecture diagram")
+<p align="center">
+  <img src="/assets/architecture.png" width="800">
+</p>
 
 ## REST API
 ### Пример использования
