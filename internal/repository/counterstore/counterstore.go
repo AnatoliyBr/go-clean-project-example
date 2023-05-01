@@ -36,8 +36,12 @@ func (cs *CounterStore) Inc(name string) int {
 
 func (cs *CounterStore) Dec(name string) int {
 	if _, ok := cs.counters[name]; ok {
-		cs.counters[name]--
-		return cs.counters[name]
+		if cs.counters[name] == 0 {
+			return -2
+		} else {
+			cs.counters[name]--
+			return cs.counters[name]
+		}
 	} else {
 		return -1
 	}

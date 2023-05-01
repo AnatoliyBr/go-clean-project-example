@@ -151,7 +151,9 @@ func (s *HTTPServer) dec(w http.ResponseWriter, r *http.Request) {
 	reply := <-replyChan
 	if reply >= 0 {
 		fmt.Fprintf(w, "ok, %s: %d\n", name, reply)
-	} else {
+	} else if reply == -1 {
 		fmt.Fprintf(w, "%s not found\n", name)
+	} else {
+		fmt.Fprintf(w, "%s can't be negative\n", name)
 	}
 }
