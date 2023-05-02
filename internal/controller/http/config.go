@@ -1,7 +1,7 @@
 package http
 
 type Config struct {
-	BindAddr string `toml:"bind_add"`
+	BindAddr string `toml:"bind_addr"`
 }
 
 func NewConfig() *Config {
