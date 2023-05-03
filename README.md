@@ -93,7 +93,11 @@ jmeter -n -t tests/jmeter/load_test.jmx -f -l tests/jmeter/result.jtl -j tests/j
 jmeter -g tests/jmeter/result.jtl -f -o tests/jmeter/report
 ```
 
-Сгенерированный [отчет](/tests/jmeter/report/index.html) в виде html-страницы расположен в директории `tests/jmeter/report` - тест успешно пройден.
+Тест успешно пройден, **сгенерированный отчет** появится в директории `tests/jmeter/report` в виде html-страницы:
+
+<p align="center">
+  <img src="/assets/jmeter_report.png" width="800">
+</p>
 
 ## Запуск и отладка
 Все команды, используемые в процессе разработки и тестирования, фиксировались в **Makefile**. 
