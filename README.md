@@ -49,13 +49,13 @@ HTTP < usecase
 $ curl "localhost:8080/set?name=a&val=19"
 Counter 'a' with val '19' was set
 $ curl "localhost:8080/get?name=a"
-a: 7
+a: 19
 $ curl "localhost:8080/inc?name=a"
-ok, a: 8
+ok, a: 20
 $ curl "localhost:8080/get?name=a"
-a: 8
+a: 20
 $ curl "localhost:8080/dec?name=a"
-a: 7
+a: 19
 ```
 
 ## Тестирование параллельных подключений
@@ -63,7 +63,7 @@ a: 7
 
 С помощью утилиты `jmeter` создается файл `load_test.jmx`, который содержит описание нагрузочного теста (Test Plan).
 
-* `500` - общее число запросов
+* `2000` - общее число запросов (по `500` на каждый endpoint)
 * `50` - число запросов, отправляемых одновременно
 
 При проведении тестирования утилита запускается в режиме non-gui:
