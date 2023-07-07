@@ -98,7 +98,11 @@ func (s *HTTPServer) set(w http.ResponseWriter, r *http.Request) {
 			ReplyChan: replyChan,
 		}
 		reply := <-replyChan
-		fmt.Fprintf(w, "Counter '%s' with val '%d' was set\n", name, reply)
+		if reply == -1 {
+			fmt.Fprintf(w, "counter '%s' can't be negative\n", name)
+		} else {
+			fmt.Fprintf(w, "counter '%s' with val '%d' was set\n", name, reply)
+		}
 	}
 }
 
@@ -114,9 +118,9 @@ func (s *HTTPServer) get(w http.ResponseWriter, r *http.Request) {
 
 	reply := <-replyChan
 	if reply >= 0 {
-		fmt.Fprintf(w, "%s: %d\n", name, reply)
+		fmt.Fprintf(w, "'%s': %d\n", name, reply)
 	} else {
-		fmt.Fprintf(w, "%s not found\n", name)
+		fmt.Fprintf(w, "'%s' not found\n", name)
 	}
 }
 
@@ -132,9 +136,11 @@ func (s *HTTPServer) inc(w http.ResponseWriter, r *http.Request) {
 
 	reply := <-replyChan
 	if reply >= 0 {
-		fmt.Fprintf(w, "ok, %s: %d\n", name, reply)
+		fmt.Fprintf(w, "ok, '%s': %d\n", name, reply)
+	} else if reply == -1 {
+		fmt.Fprintf(w, "'%s' not found\n", name)
 	} else {
-		fmt.Fprintf(w, "%s not found\n", name)
+		fmt.Fprintf(w, "'%s' has reached its maximum\n", name)
 	}
 }
 
@@ -150,10 +156,10 @@ func (s *HTTPServer) dec(w http.ResponseWriter, r *http.Request) {
 
 	reply := <-replyChan
 	if reply >= 0 {
-		fmt.Fprintf(w, "ok, %s: %d\n", name, reply)
+		fmt.Fprintf(w, "ok, '%s': %d\n", name, reply)
 	} else if reply == -1 {
-		fmt.Fprintf(w, "%s not found\n", name)
+		fmt.Fprintf(w, "'%s' not found\n", name)
 	} else {
-		fmt.Fprintf(w, "%s can't be negative\n", name)
+		fmt.Fprintf(w, "'%s' can't be negative\n", name)
 	}
 }

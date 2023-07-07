@@ -1,6 +1,10 @@
 package counterstore
 
-import "github.com/AnatoliyBr/go-clean-project-example/internal/entity"
+import (
+	"math"
+
+	"github.com/AnatoliyBr/go-clean-project-example/internal/entity"
+)
 
 type CounterStore struct {
 	counters entity.Counters
@@ -13,8 +17,12 @@ func NewCounterStore(initvals map[string]int) *CounterStore {
 }
 
 func (cs *CounterStore) Set(name string, val int) int {
-	cs.counters[name] = val
-	return val
+	if val < 0 {
+		return -1
+	} else {
+		cs.counters[name] = val
+		return val
+	}
 }
 
 func (cs *CounterStore) Get(name string) int {
@@ -27,8 +35,12 @@ func (cs *CounterStore) Get(name string) int {
 
 func (cs *CounterStore) Inc(name string) int {
 	if _, ok := cs.counters[name]; ok {
-		cs.counters[name]++
-		return cs.counters[name]
+		if cs.counters[name] == math.MaxInt {
+			return -2
+		} else {
+			cs.counters[name]++
+			return cs.counters[name]
+		}
 	} else {
 		return -1
 	}

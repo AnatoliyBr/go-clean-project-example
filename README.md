@@ -6,6 +6,7 @@
 * Использовать **инъекцию зависимостей** для обеспечения низкой связанности слоев
 * Использовать модуль [BurntSushi/toml](https://github.com/BurntSushi/toml) для **конфигурирования** приложения из `.toml` файла
   * Путь к файлу можно передать с **флагом** `-config-path` при запуске исполняемого файла приложения
+* Использовать модуль [stretchr/testify](https://github.com/stretchr/testify) для **модульного тестирования (unit-tests)** функций-обработчиков HTTP сервера
 * Проводить **нагрузочное тестирование** с помощью утилиты [Apache JMeter](https://jmeter.apache.org/index.html)
 
 ### Описание
@@ -47,15 +48,15 @@ HTTP < usecase
 ### Пример использования
 ```bash
 $ curl "localhost:8080/set?name=a&val=19"
-Counter 'a' with val '19' was set
+counter 'a' with val '19' was set
 $ curl "localhost:8080/get?name=a"
-a: 19
+'a': 19
 $ curl "localhost:8080/inc?name=a"
-ok, a: 20
+ok, 'a': 20
 $ curl "localhost:8080/get?name=a"
-a: 20
+'a': 20
 $ curl "localhost:8080/dec?name=a"
-a: 19
+ok, 'a': 19
 ```
 
 ## Тестирование параллельных подключений
@@ -105,3 +106,5 @@ jmeter -g tests/jmeter/result.jtl -f -o tests/jmeter/report
 ## Полезные ссылки
 * [On concurrency in Go HTTP servers](https://eli.thegreenplace.net/2019/on-concurrency-in-go-http-servers/)
 * [Разработка REST-серверов на Go. Часть 1: стандартная библиотека](https://habr.com/ru/companies/ruvds/articles/559816/)
+* [REST API на Golang](https://www.youtube.com/playlist?list=PLehOyJfJkFkJ5m37b4oWh783yzVlHdnUH)
+* [Тестирование HTTP-сервера в Golang](https://www.youtube.com/watch?v=_OnKZr1aZHw)
